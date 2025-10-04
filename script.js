@@ -9,10 +9,24 @@ class RadioApp {
         this.radioPauseDuration = 1500; // 1.5 seconds pause between songs
         this.randomizedPlaylist = []; // Randomized order of songs for current station
         this.isPlayingAnnouncement = false;
+        this.isMobile = window.innerWidth <= 768;
         
         this.initializeElements();
         this.setupEventListeners();
         this.updateUI();
+    }
+
+    scrollToPlayerOnMobile() {
+        // Check if device is mobile (screen width <= 768px)
+        if (window.innerWidth <= 768) {
+            // Small delay to ensure the now-playing section is visible
+            setTimeout(() => {
+                this.nowPlayingSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        }
     }
 
     initializeElements() {
@@ -106,6 +120,12 @@ class RadioApp {
             this.updatePlayPauseButton(false);
             this.stopVisualizer();
         });
+
+        // Handle window resize for mobile detection
+        window.addEventListener('resize', () => {
+            // Re-check mobile status on resize
+            this.isMobile = window.innerWidth <= 768;
+        });
     }
 
     selectStation(stationId) {
@@ -129,6 +149,9 @@ class RadioApp {
         
         // Set current song to first in randomized playlist
         this.currentSong = this.randomizedPlaylist[this.currentSongIndex];
+        
+        // Scroll to player on mobile devices
+        this.scrollToPlayerOnMobile();
         
         // Start playing
         this.playCurrentSong();
