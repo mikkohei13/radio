@@ -138,6 +138,18 @@ class RadioApp {
         if (this.currentStation === 'shuffle') {
             // For shuffle, use all songs in random order
             this.randomizedPlaylist = [...this.allSongs].sort(() => Math.random() - 0.5);
+            
+            // Insert Radio Shuffle announcement as second song
+            const announcement = {
+                filename: 'Radio Shuffle.mp3',
+                title: 'Radio Shuffle Station ID',
+                artist: 'Station Announcement',
+                startTime: 0,
+                isAnnouncement: true
+            };
+            
+            // Insert announcement at position 1 (second song)
+            this.randomizedPlaylist.splice(1, 0, announcement);
         } else {
             // For regular stations, randomize the station's songs
             const station = STATIONS[this.currentStation];
@@ -220,18 +232,13 @@ class RadioApp {
     }
 
     nextSong() {
-        if (this.currentStation === 'shuffle') {
-            // For shuffle, pick another random song
-            this.selectRandomSong();
-        } else {
-            // For regular stations, go to next song in randomized playlist
-            this.currentSongIndex = (this.currentSongIndex + 1) % this.randomizedPlaylist.length;
-            this.currentSong = this.randomizedPlaylist[this.currentSongIndex];
-            
-            // If we've completed the playlist, create a new randomized one
-            if (this.currentSongIndex === 0) {
-                this.createRandomizedPlaylist();
-            }
+        // For all stations, go to next song in randomized playlist
+        this.currentSongIndex = (this.currentSongIndex + 1) % this.randomizedPlaylist.length;
+        this.currentSong = this.randomizedPlaylist[this.currentSongIndex];
+        
+        // If we've completed the playlist, create a new randomized one
+        if (this.currentSongIndex === 0) {
+            this.createRandomizedPlaylist();
         }
         
         // When moving to next song, don't use startTime - play from beginning
