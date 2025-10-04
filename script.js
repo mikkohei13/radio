@@ -13,6 +13,8 @@ class RadioApp {
 
     initializeElements() {
         this.stationsContainer = document.getElementById('stations-container');
+        this.nowPlayingSection = document.querySelector('.now-playing');
+        this.noStationMessage = document.querySelector('.no-station-message');
         this.playPauseBtn = document.getElementById('play-pause-btn');
         this.nextBtn = document.getElementById('next-btn');
         this.currentStationEl = document.getElementById('current-station');
@@ -33,7 +35,21 @@ class RadioApp {
             const button = document.createElement('button');
             button.className = 'station-btn';
             button.dataset.station = stationId;
-            button.innerHTML = `<span class="station-name">${station.name}</span>`;
+            button.title = station.name; // Tooltip with station name
+            
+            // Create image element
+            const img = document.createElement('img');
+            img.src = `./station_art/${station.name}.png`;
+            img.alt = station.name;
+            img.className = 'station-logo';
+            
+            // Handle missing images
+            img.onerror = () => {
+                // Fallback to text if image fails to load
+                button.innerHTML = `<span class="station-name">${station.name}</span>`;
+            };
+            
+            button.appendChild(img);
             this.stationsContainer.appendChild(button);
         });
         
@@ -97,6 +113,10 @@ class RadioApp {
         }
 
         this.currentStation = stationId;
+        
+        // Show now playing section and hide no station message
+        this.nowPlayingSection.style.display = 'block';
+        this.noStationMessage.style.display = 'none';
         
         // Select random song from station
         this.selectRandomSong();
@@ -176,7 +196,7 @@ class RadioApp {
         this.artistEl.textContent = this.currentSong.artist;
 
         // Update cover art
-        const coverArtPath = `./cover_art/${this.currentSong.filename.replace('.mp3', '.png')}`;
+        const coverArtPath = `./cover_art/${this.currentSong.filename.replace('.mp3', '.jpg')}`;
         this.coverArtEl.src = coverArtPath;
         this.coverArtEl.alt = `${this.currentSong.title} - ${this.currentSong.artist}`;
         
@@ -207,6 +227,10 @@ class RadioApp {
     }
 
     updateUI() {
+        // Hide now playing section and show no station message initially
+        this.nowPlayingSection.style.display = 'none';
+        this.noStationMessage.style.display = 'block';
+        
         // Initial state
         this.currentStationEl.textContent = 'No station selected';
         this.songTitleEl.textContent = 'No song playing';
