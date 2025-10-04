@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio App - Health Check</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            color: #cccccc;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .status.success {
+            background-color: #4caf50;
+            color: white;
+        }
+        .status.error {
+            background-color: #f44336;
+            color: white;
+        }
+        .status.warning {
+            background-color: #ff9800;
+            color: white;
+        }
+        .file-list {
+            background-color: #1a1a1a;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        .file-name {
+            font-family: monospace;
+            color: #cccccc;
+        }
+        .error-list {
+            background-color: #2d1a1a;
+            border: 1px solid #f44336;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .error-item {
+            color: #ffcdd2;
+            margin: 5px 0;
+        }
+        .summary {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+        .summary.success {
+            color: #4caf50;
+        }
+        .summary.error {
+            color: #f44336;
+        }
+        .summary.warning {
+            color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Radio App Health Check</h1>
+        
+        <div id="summary" class="summary">Checking...</div>
+        
+        <div class="section">
+            <h2>Config.js Validation</h2>
+            <div id="config-status">Loading...</div>
+            <div id="config-details"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Station Logos</h2>
+            <div id="station-logos-status">Loading...</div>
+            <div id="station-logos-details"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Audio Files</h2>
+            <div id="audio-files-status">Loading...</div>
+            <div id="audio-files-details"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Cover Art Files</h2>
+            <div id="cover-art-status">Loading...</div>
+            <div id="cover-art-details"></div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        class HealthChecker {
+            constructor() {
+                this.errors = [];
+                this.warnings = [];
+                this.checks = {
+                    config: { status: 'loading', details: [] },
+                    stationLogos: { status: 'loading', details: [] },
+                    audioFiles: { status: 'loading', details: [] },
+                    coverArt: { status: 'loading', details: [] }
+                };
+                
+                this.runChecks();
+            }
+
+            async runChecks() {
+                try {
+                    await this.checkConfig();
+                    await this.checkStationLogos();
+                    await this.checkAudioFiles();
+                    await this.checkCoverArt();
+                    this.updateSummary();
+                } catch (error) {
+                    console.error('Health check failed:', error);
+                    this.errors.push('Health check failed: ' + error.message);
+                    this.updateSummary();
+                }
+            }
+
+            checkConfig() {
+                try {
+                    // Check if STATIONS object exists
+                    if (typeof STATIONS === 'undefined') {
+                        throw new Error('STATIONS object not found in config.js');
+                    }
+
+                    // Check if getAllSongs function exists
+                    if (typeof getAllSongs === 'undefined') {
+                        throw new Error('getAllSongs function not found in config.js');
+                    }
+
+                    // Validate station structure
+                    const stationIds = Object.keys(STATIONS);
+                    if (stationIds.length === 0) {
+                        throw new Error('No stations defined in config.js');
+                    }
+
+                    let totalSongs = 0;
+                    for (const [stationId, station] of Object.entries(STATIONS)) {
+                        // Check required properties
+                        if (!station.name) {
+                            this.errors.push(`Station ${stationId} missing 'name' property`);
+                        }
+                        if (!Array.isArray(station.songs)) {
+                            this.errors.push(`Station ${stationId} 'songs' property is not an array`);
+                        } else {
+                            totalSongs += station.songs.length;
+                            
+                            // Validate each song
+                            station.songs.forEach((song, index) => {
+                                if (!song.filename) {
+                                    this.errors.push(`Station ${stationId}, song ${index}: missing 'filename'`);
+                                }
+                                if (!song.title) {
+                                    this.errors.push(`Station ${stationId}, song ${index}: missing 'title'`);
+                                }
+                                if (typeof song.startTime !== 'number' || song.startTime < 0) {
+                                    this.errors.push(`Station ${stationId}, song ${index}: 'startTime' must be a non-negative number`);
+                                }
+                            });
+                        }
+                    }
+
+                    // Test getAllSongs function
+                    const allSongs = getAllSongs();
+                    if (!Array.isArray(allSongs)) {
+                        this.errors.push('getAllSongs() does not return an array');
+                    }
+
+                    this.checks.config.status = this.errors.length === 0 ? 'success' : 'error';
+                    this.checks.config.details = [
+                        `Found ${stationIds.length} stations`,
+                        `Total songs: ${totalSongs}`,
+                        `Shuffle songs: ${allSongs.length}`
+                    ];
+
+                } catch (error) {
+                    this.errors.push('Config validation failed: ' + error.message);
+                    this.checks.config.status = 'error';
+                    this.checks.config.details = [error.message];
+                }
+
+                this.updateConfigDisplay();
+            }
+
+            async checkStationLogos() {
+                const stationNames = Object.values(STATIONS).map(station => station.name);
+                const results = await this.checkFiles(stationNames, './station_art/', '.png');
+                
+                this.checks.stationLogos.status = results.missing.length === 0 ? 'success' : 'error';
+                this.checks.stationLogos.details = results;
+                this.updateStationLogosDisplay();
+            }
+
+            async checkAudioFiles() {
+                const allSongs = getAllSongs();
+                const filenames = allSongs.map(song => song.filename);
+                const results = await this.checkFiles(filenames, './audio/', '');
+                
+                this.checks.audioFiles.status = results.missing.length === 0 ? 'success' : 'error';
+                this.checks.audioFiles.details = results;
+                this.updateAudioFilesDisplay();
+            }
+
+            async checkCoverArt() {
+                const allSongs = getAllSongs();
+                const coverArtFilenames = allSongs.map(song => 
+                    song.filename.replace('.mp3', '.jpg')
+                );
+                const results = await this.checkFiles(coverArtFilenames, './cover_art/', '');
+                
+                this.checks.coverArt.status = results.missing.length === 0 ? 'success' : 'error';
+                this.checks.coverArt.details = results;
+                this.updateCoverArtDisplay();
+            }
+
+            async checkFiles(filenames, basePath, extension) {
+                const results = {
+                    found: [],
+                    missing: [],
+                    errors: []
+                };
+
+                for (const filename of filenames) {
+                    try {
+                        const fullPath = basePath + filename + extension;
+                        const response = await fetch(fullPath, { method: 'HEAD' });
+                        
+                        if (response.ok) {
+                            results.found.push(filename);
+                        } else {
+                            results.missing.push(filename);
+                        }
+                    } catch (error) {
+                        results.errors.push(`${filename}: ${error.message}`);
+                    }
+                }
+
+                return results;
+            }
+
+            updateConfigDisplay() {
+                const statusEl = document.getElementById('config-status');
+                const detailsEl = document.getElementById('config-details');
+                
+                statusEl.innerHTML = `<span class="status ${this.checks.config.status}">${this.checks.config.status.toUpperCase()}</span>`;
+                
+                if (this.checks.config.details.length > 0) {
+                    detailsEl.innerHTML = '<div class="file-list">' + 
+                        this.checks.config.details.map(detail => 
+                            `<div class="file-item"><span>${detail}</span></div>`
+                        ).join('') + 
+                        '</div>';
+                }
+            }
+
+            updateStationLogosDisplay() {
+                const statusEl = document.getElementById('station-logos-status');
+                const detailsEl = document.getElementById('station-logos-details');
+                
+                statusEl.innerHTML = `<span class="status ${this.checks.stationLogos.status}">${this.checks.stationLogos.status.toUpperCase()}</span>`;
+                
+                const results = this.checks.stationLogos.details;
+                let html = '';
+                
+                if (results.found.length > 0) {
+                    html += '<div class="file-list"><strong>Found:</strong><br>';
+                    results.found.forEach(filename => {
+                        html += `<div class="file-item"><span class="file-name">${filename}.png</span><span class="status success">✓</span></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (results.missing.length > 0) {
+                    html += '<div class="error-list"><strong>Missing:</strong><br>';
+                    results.missing.forEach(filename => {
+                        html += `<div class="error-item">${filename}.png</div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                detailsEl.innerHTML = html;
+            }
+
+            updateAudioFilesDisplay() {
+                const statusEl = document.getElementById('audio-files-status');
+                const detailsEl = document.getElementById('audio-files-details');
+                
+                statusEl.innerHTML = `<span class="status ${this.checks.audioFiles.status}">${this.checks.audioFiles.status.toUpperCase()}</span>`;
+                
+                const results = this.checks.audioFiles.details;
+                let html = '';
+                
+                if (results.found.length > 0) {
+                    html += '<div class="file-list"><strong>Found:</strong><br>';
+                    results.found.forEach(filename => {
+                        html += `<div class="file-item"><span class="file-name">${filename}</span><span class="status success">✓</span></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (results.missing.length > 0) {
+                    html += '<div class="error-list"><strong>Missing:</strong><br>';
+                    results.missing.forEach(filename => {
+                        html += `<div class="error-item">${filename}</div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                detailsEl.innerHTML = html;
+            }
+
+            updateCoverArtDisplay() {
+                const statusEl = document.getElementById('cover-art-status');
+                const detailsEl = document.getElementById('cover-art-details');
+                
+                statusEl.innerHTML = `<span class="status ${this.checks.coverArt.status}">${this.checks.coverArt.status.toUpperCase()}</span>`;
+                
+                const results = this.checks.coverArt.details;
+                let html = '';
+                
+                if (results.found.length > 0) {
+                    html += '<div class="file-list"><strong>Found:</strong><br>';
+                    results.found.forEach(filename => {
+                        html += `<div class="file-item"><span class="file-name">${filename}</span><span class="status success">✓</span></span></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (results.missing.length > 0) {
+                    html += '<div class="error-list"><strong>Missing:</strong><br>';
+                    results.missing.forEach(filename => {
+                        html += `<div class="error-item">${filename}</div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                detailsEl.innerHTML = html;
+            }
+
+            updateSummary() {
+                const summaryEl = document.getElementById('summary');
+                const hasErrors = this.checks.config.status === 'error' || 
+                                 this.checks.stationLogos.status === 'error' ||
+                                 this.checks.audioFiles.status === 'error' ||
+                                 this.checks.coverArt.status === 'error';
+                
+                const hasWarnings = Object.values(this.checks).some(check => check.status === 'warning');
+                
+                if (hasErrors) {
+                    summaryEl.className = 'summary error';
+                    summaryEl.textContent = '❌ Health check failed - Issues found';
+                } else if (hasWarnings) {
+                    summaryEl.className = 'summary warning';
+                    summaryEl.textContent = '⚠️ Health check passed with warnings';
+                } else {
+                    summaryEl.className = 'summary success';
+                    summaryEl.textContent = '✅ All checks passed - Radio app is healthy';
+                }
+            }
+        }
+
+        // Start health check when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new HealthChecker();
+        });
+    </script>
+</body>
+</html>
