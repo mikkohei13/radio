@@ -5,6 +5,10 @@ class RadioApp {
         this.currentSongIndex = 0;
         this.isPlaying = false;
         this.allSongs = getAllSongs();
+        this.isTransitioning = false;
+        this.radioPauseDuration = 1500; // 1.5 seconds pause between songs
+        this.randomizedPlaylist = []; // Randomized order of songs for current station
+        this.isPlayingAnnouncement = false;
         
         this.initializeElements();
         this.setupEventListeners();
@@ -73,12 +77,14 @@ class RadioApp {
 
         // Next song button
         this.nextBtn.addEventListener('click', () => {
-            this.nextSong();
+            if (!this.isTransitioning) {
+                this.nextSong();
+            }
         });
 
         // Audio events
         this.audio.addEventListener('ended', () => {
-            this.nextSong();
+            this.handleSongEnd();
         });
 
         this.audio.addEventListener('loadstart', () => {
@@ -118,11 +124,40 @@ class RadioApp {
         this.nowPlayingSection.style.display = 'block';
         this.noStationMessage.style.display = 'none';
         
-        // Select random song from station
-        this.selectRandomSong();
+        // Create randomized playlist for this station
+        this.createRandomizedPlaylist();
+        
+        // Set current song to first in randomized playlist
+        this.currentSong = this.randomizedPlaylist[this.currentSongIndex];
         
         // Start playing
         this.playCurrentSong();
+    }
+
+    createRandomizedPlaylist() {
+        if (this.currentStation === 'shuffle') {
+            // For shuffle, use all songs in random order
+            this.randomizedPlaylist = [...this.allSongs].sort(() => Math.random() - 0.5);
+        } else {
+            // For regular stations, randomize the station's songs
+            const station = STATIONS[this.currentStation];
+            this.randomizedPlaylist = [...station.songs].sort(() => Math.random() - 0.5);
+            
+            // Insert station announcement as second song
+            const stationName = station.name;
+            const announcement = {
+                filename: `${stationName}.mp3`,
+                title: `${stationName} Station ID`,
+                artist: 'Station Announcement',
+                startTime: 0,
+                isAnnouncement: true
+            };
+            
+            // Insert announcement at position 1 (second song)
+            this.randomizedPlaylist.splice(1, 0, announcement);
+        }
+        
+        this.currentSongIndex = 0;
     }
 
     selectRandomSong() {
@@ -142,7 +177,16 @@ class RadioApp {
     playCurrentSong(useStartTime = true) {
         if (!this.currentSong) return;
 
-        const audioPath = `./audio/${this.currentSong.filename}`;
+        // Determine audio path based on whether it's an announcement
+        let audioPath;
+        if (this.currentSong.isAnnouncement) {
+            audioPath = `./announcements/${this.currentSong.filename}`;
+            this.isPlayingAnnouncement = true;
+        } else {
+            audioPath = `./audio/${this.currentSong.filename}`;
+            this.isPlayingAnnouncement = false;
+        }
+        
         this.audio.src = audioPath;
         
         // Set up seeking to start time after metadata loads (only when switching stations)
@@ -160,15 +204,34 @@ class RadioApp {
         this.updateNowPlaying();
     }
 
+    handleSongEnd() {
+        if (this.isTransitioning) return;
+        
+        this.isTransitioning = true;
+        this.isPlaying = false;
+        this.updatePlayPauseButton(false);
+        this.stopVisualizer();
+        
+        // Wait for the pause duration before playing next song
+        setTimeout(() => {
+            this.nextSong();
+            this.isTransitioning = false;
+        }, this.radioPauseDuration);
+    }
+
     nextSong() {
         if (this.currentStation === 'shuffle') {
             // For shuffle, pick another random song
             this.selectRandomSong();
         } else {
-            // For regular stations, go to next song in sequence
-            const station = STATIONS[this.currentStation];
-            this.currentSongIndex = (this.currentSongIndex + 1) % station.songs.length;
-            this.currentSong = station.songs[this.currentSongIndex];
+            // For regular stations, go to next song in randomized playlist
+            this.currentSongIndex = (this.currentSongIndex + 1) % this.randomizedPlaylist.length;
+            this.currentSong = this.randomizedPlaylist[this.currentSongIndex];
+            
+            // If we've completed the playlist, create a new randomized one
+            if (this.currentSongIndex === 0) {
+                this.createRandomizedPlaylist();
+            }
         }
         
         // When moving to next song, don't use startTime - play from beginning
@@ -176,6 +239,8 @@ class RadioApp {
     }
 
     togglePlayPause() {
+        if (this.isTransitioning) return; // Don't allow play/pause during transitions
+        
         if (this.isPlaying) {
             this.audio.pause();
         } else {
@@ -195,18 +260,22 @@ class RadioApp {
         this.songTitleEl.textContent = this.currentSong.title;
         this.artistEl.textContent = this.currentSong.artist;
 
-        // Update cover art
-        const coverArtPath = `./cover_art/${this.currentSong.filename.replace('.mp3', '.jpg')}`;
-        this.coverArtEl.src = coverArtPath;
-        this.coverArtEl.alt = `${this.currentSong.title} - ${this.currentSong.artist}`;
-        
-        // Handle missing cover art
-        this.coverArtEl.onerror = () => {
+        // Update cover art (hide for announcements)
+        if (this.currentSong.isAnnouncement) {
             this.coverArtEl.style.display = 'none';
-        };
-        this.coverArtEl.onload = () => {
-            this.coverArtEl.style.display = 'block';
-        };
+        } else {
+            const coverArtPath = `./cover_art/${this.currentSong.filename.replace('.mp3', '.jpg')}`;
+            this.coverArtEl.src = coverArtPath;
+            this.coverArtEl.alt = `${this.currentSong.title} - ${this.currentSong.artist}`;
+            
+            // Handle missing cover art
+            this.coverArtEl.onerror = () => {
+                this.coverArtEl.style.display = 'none';
+            };
+            this.coverArtEl.onload = () => {
+                this.coverArtEl.style.display = 'block';
+            };
+        }
     }
 
     updatePlayPauseButton(playing) {
