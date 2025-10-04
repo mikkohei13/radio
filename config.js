@@ -58,31 +58,31 @@ const STATIONS = {
         filename: "Cranes at Sunset.mp3", 
         title: "Cranes at Sunset", 
         artist: "Jonah Gray", 
-        startTime: 0 
+        startTime: 12 
       },
       { 
         filename: "Valkoinen Z.mp3", 
         title: "Valkoinen Z", 
         artist: "Veikko Vauhti", 
-        startTime: 0 
+        startTime: 101 
       },
       { 
         filename: "Silence Turns to Song.mp3", 
         title: "Silence Turns to Song", 
         artist: "Cody Hayes", 
-        startTime: 0 
+        startTime: 41 
       },
       { 
         filename: "Tram of Del Mar.mp3", 
         title: "Tram of Del Mar", 
         artist: "Alessandro di Luna", 
-        startTime: 0 
+        startTime: 53 
       },
       { 
         filename: "Luteiden kaiho.mp3", 
         title: "Luteiden kaiho", 
         artist: "Tapio Tienpää ja Pellon Pojat", 
-        startTime: 0 
+        startTime: 120 
       },
     ]
   },
