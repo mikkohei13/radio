@@ -1,6 +1,7 @@
 const STATIONS = {
   metalNation: {
     name: "Metal Nation",
+    tagline: "Louder than your neighbors can handle. Heavy metal & hard rock.",
     songs: [
       { 
         filename: "Forge of Species Data.mp3", 
@@ -24,6 +25,7 @@ const STATIONS = {
   },
   shadowrun: {
     name: "Shadowrun",
+    tagline: "Broadcasting on frequencies they can't find. If you're listening, you are already free.",
     songs: [
       { 
         filename: "Shadowrun.mp3", 
@@ -53,6 +55,7 @@ const STATIONS = {
   },
   sointulaFM: {
     name: "Sointula FM",
+    tagline: "Musiikkia, joka ei vanhene koskaan. Folk, country & iskelmä.",
     songs: [
       { 
         filename: "Cranes at Sunset.mp3", 
@@ -88,6 +91,7 @@ const STATIONS = {
   },
   stereoCircus: {
     name: "Stereo Circus Radio",
+    tagline: "Where the unexpected steals the show! Songs without a dedicated station.",
     songs: [
       { 
         filename: "Missä on mun luteet nyt.mp3", 
@@ -123,6 +127,7 @@ const STATIONS = {
   },
   shuffle: {
     name: "Radio Shuffle",
+    tagline: "Add some randomness to your life! Every song shuffled.",
     songs: [] // Special handling - picks from all songs randomly
   }
 };

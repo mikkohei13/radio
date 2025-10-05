@@ -34,6 +34,7 @@ class RadioApp {
         this.nowPlayingSection = document.querySelector('.now-playing');
         this.noStationMessage = document.querySelector('.no-station-message');
         this.nowPlayingTitle = document.getElementById('now-playing-title');
+        this.nowPlayingTagline = document.getElementById('now-playing-tagline');
         this.playPauseBtn = document.getElementById('play-pause-btn');
         this.nextBtn = document.getElementById('next-btn');
         this.songTitleEl = document.getElementById('song-title');
@@ -287,6 +288,7 @@ class RadioApp {
 
         const station = STATIONS[this.currentStation];
         this.nowPlayingTitle.textContent = `Now Listening to ${station.name}`;
+        this.nowPlayingTagline.textContent = station.tagline;
         this.songTitleEl.textContent = this.currentSong.title;
         this.artistEl.textContent = this.currentSong.artist;
 
@@ -332,6 +334,7 @@ class RadioApp {
         
         // Initial state
         this.nowPlayingTitle.textContent = 'Now Listening to';
+        this.nowPlayingTagline.textContent = '';
         this.songTitleEl.textContent = 'No song playing';
         this.artistEl.textContent = 'No artist';
         this.coverArtEl.style.display = 'none';
