@@ -29,25 +29,25 @@ const STATIONS = {
     songs: [
       { 
         filename: "Shadowrun.mp3", 
-        title: "Shadowrun", 
+        title: "Shadowrun (pt. 1)", 
         artist: "Shadowrun", 
         startTime: 62 
       },
       { 
         filename: "Signal.mp3", 
-        title: "Signal", 
+        title: "Signal (Shadowrun pt. 2)", 
         artist: "Shadowrun", 
         startTime: 50 
       },
       { 
         filename: "Ghost of Me.mp3", 
-        title: "Ghost of Me", 
+        title: "Ghost of Me (Shadowrun pt. 3)", 
         artist: "Shadowrun", 
         startTime: 90 
       },
       { 
         filename: "Incomprehensible.mp3", 
-        title: "Incomprehensible", 
+        title: "Incomprehensible (Shadowrun pt. 4)", 
         artist: "Shadowrun", 
         startTime: 80 
       },
@@ -114,7 +114,7 @@ const STATIONS = {
       { 
         filename: "Midnight Drive.mp3", 
         title: "Midnight Drive", 
-        artist: "Aurora Drive", 
+        artist: "Neon Pines", 
         startTime: 50 
       },
       { 
