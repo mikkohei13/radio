@@ -6,6 +6,7 @@ class AudioVisualizer {
         this.audioContext = null;
         this.analyser = null;
         this.source = null;
+        this.connectedAudioElement = null;
         this.dataArray = null;
         this.animationId = null;
         this.isInitialized = false;
@@ -37,17 +38,21 @@ class AudioVisualizer {
         if (!this.isInitialized) return;
         
         try {
-            // Disconnect existing source if any
-            if (this.source) {
-                this.source.disconnect();
+            // Only create a new source if we don't have one or if it's a different audio element
+            if (!this.source || this.connectedAudioElement !== audioElement) {
+                // Disconnect existing source if any
+                if (this.source) {
+                    this.source.disconnect();
+                }
+                
+                // Create new source from audio element
+                this.source = this.audioContext.createMediaElementSource(audioElement);
+                this.connectedAudioElement = audioElement;
+                
+                // Connect: source -> analyser -> destination
+                this.source.connect(this.analyser);
+                this.analyser.connect(this.audioContext.destination);
             }
-            
-            // Create new source from audio element
-            this.source = this.audioContext.createMediaElementSource(audioElement);
-            
-            // Connect: source -> analyser -> destination
-            this.source.connect(this.analyser);
-            this.analyser.connect(this.audioContext.destination);
         } catch (error) {
             console.error('Error connecting audio:', error);
         }
