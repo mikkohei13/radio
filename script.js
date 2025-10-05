@@ -1,3 +1,115 @@
+class AudioVisualizer {
+    constructor(canvasId, audioElementId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.audioElement = document.getElementById(audioElementId);
+        this.audioContext = null;
+        this.analyser = null;
+        this.source = null;
+        this.dataArray = null;
+        this.animationId = null;
+        this.isInitialized = false;
+        
+        this.init();
+    }
+    
+    async init() {
+        try {
+            // Create AudioContext
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Create analyser node
+            this.analyser = this.audioContext.createAnalyser();
+            this.analyser.fftSize = 256;
+            this.analyser.smoothingTimeConstant = 0.8;
+            
+            // Create data array for frequency data
+            const bufferLength = this.analyser.frequencyBinCount;
+            this.dataArray = new Uint8Array(bufferLength);
+            
+            this.isInitialized = true;
+        } catch (error) {
+            console.error('Error initializing audio visualizer:', error);
+        }
+    }
+    
+    connectAudio(audioElement) {
+        if (!this.isInitialized) return;
+        
+        try {
+            // Disconnect existing source if any
+            if (this.source) {
+                this.source.disconnect();
+            }
+            
+            // Create new source from audio element
+            this.source = this.audioContext.createMediaElementSource(audioElement);
+            
+            // Connect: source -> analyser -> destination
+            this.source.connect(this.analyser);
+            this.analyser.connect(this.audioContext.destination);
+        } catch (error) {
+            console.error('Error connecting audio:', error);
+        }
+    }
+    
+    start() {
+        if (!this.isInitialized || this.animationId) return;
+        
+        // Resume audio context if suspended
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
+        
+        this.draw();
+    }
+    
+    stop() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
+        
+        // Clear canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+    
+    draw() {
+        if (!this.isInitialized) return;
+        
+        this.animationId = requestAnimationFrame(() => this.draw());
+        
+        // Get frequency data
+        this.analyser.getByteFrequencyData(this.dataArray);
+        
+        // Clear canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Use only 80% of the frequency data (remove rightmost 20%)
+        const dataLength = Math.floor(this.dataArray.length * 0.8);
+        
+        // Calculate bar dimensions
+        const barWidth = this.canvas.width / dataLength;
+        const maxHeight = this.canvas.height;
+        
+        // Draw frequency bars
+        for (let i = 0; i < dataLength; i++) {
+            const barHeight = (this.dataArray[i] / 255) * maxHeight;
+            const x = i * barWidth;
+            const y = this.canvas.height - barHeight;
+            
+            // Create gradient for each bar
+            const gradient = this.ctx.createLinearGradient(0, y, 0, this.canvas.height);
+            gradient.addColorStop(0, '#4a90e2');
+            gradient.addColorStop(1, '#5ba0f2');
+            
+            // Draw bar
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(x, y, barWidth - 1, barHeight);
+        }
+    }
+}
+
 class RadioApp {
     constructor() {
         this.audio = new Audio();
@@ -10,10 +122,16 @@ class RadioApp {
         this.randomizedPlaylist = []; // Randomized order of songs for current station
         this.isPlayingAnnouncement = false;
         this.isMobile = window.innerWidth <= 768;
+        this.audioVisualizer = null; // Will be initialized after DOM is ready
         
         this.initializeElements();
         this.setupEventListeners();
         this.updateUI();
+    }
+    
+    initializeVisualizer() {
+        // Initialize audio visualizer after DOM is ready
+        this.audioVisualizer = new AudioVisualizer('visualizer-canvas', 'audio-source');
     }
 
     scrollToPlayerOnMobile() {
@@ -225,6 +343,11 @@ class RadioApp {
         
         this.audio.src = audioPath;
         
+        // Connect audio to visualizer
+        if (this.audioVisualizer) {
+            this.audioVisualizer.connectAudio(this.audio);
+        }
+        
         // Set up seeking to start time after metadata loads (only when switching stations)
         this.audio.addEventListener('loadedmetadata', () => {
             if (useStartTime && this.currentSong.startTime > 0) {
@@ -320,11 +443,15 @@ class RadioApp {
     }
 
     startVisualizer() {
-        this.visualizer.classList.remove('paused');
+        if (this.audioVisualizer) {
+            this.audioVisualizer.start();
+        }
     }
 
     stopVisualizer() {
-        this.visualizer.classList.add('paused');
+        if (this.audioVisualizer) {
+            this.audioVisualizer.stop();
+        }
     }
 
     updateUI() {
@@ -345,5 +472,6 @@ class RadioApp {
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new RadioApp();
+    const app = new RadioApp();
+    app.initializeVisualizer();
 });

@@ -42,12 +42,11 @@
                 
                 <!-- Music Visualizer -->
                 <div class="visualizer">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
+                    <canvas id="visualizer-canvas" width="400" height="120"></canvas>
                 </div>
+                
+                <!-- Hidden audio element for Web Audio API -->
+                <audio id="audio-source" style="display: none;"></audio>
             </section>
 
             <!-- No Station Selected Message -->
