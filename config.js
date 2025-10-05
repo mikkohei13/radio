@@ -20,6 +20,12 @@ const STATIONS = {
         artist: "Shadowrun", 
         startTime: 215 
       },
+      { 
+        filename: "180 Seconds to Vibe.mp3", 
+        title: "180 Seconds to Vibe", 
+        artist: "Machina Pulse", 
+        startTime: 10 
+      },
     ]
   },
   shadowrun: {

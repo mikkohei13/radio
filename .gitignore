@@ -1,6 +1,10 @@
 
 audio/*
 cover_art/*
+upload_rsync.sh
+upload.sh
+upload_manual.sh
+upload_scp.sh
 
 # Python
 venv/
