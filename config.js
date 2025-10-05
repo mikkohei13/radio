@@ -6,19 +6,19 @@ const STATIONS = {
         filename: "Forge of Species Data.mp3", 
         title: "Forge of Species Data", 
         artist: "Guardians of Knowledge", 
-        startTime: 0 
+        startTime: 157 
       },
       { 
         filename: "Echoes of the Wild.mp3", 
         title: "Echoes of the Wild", 
         artist: "Together Bound", 
-        startTime: 0 
+        startTime: 87
       },
       { 
         filename: "Shadowrun.mp3", 
         title: "Shadowrun", 
         artist: "Shadowrun", 
-        startTime: 0 
+        startTime: 215 
       },
     ]
   },
@@ -29,30 +29,30 @@ const STATIONS = {
         filename: "Shadowrun.mp3", 
         title: "Shadowrun", 
         artist: "Shadowrun", 
-        startTime: 0 
+        startTime: 62 
       },
       { 
         filename: "Signal.mp3", 
         title: "Signal", 
         artist: "Shadowrun", 
-        startTime: 0 
+        startTime: 50 
       },
       { 
         filename: "Ghost of Me.mp3", 
         title: "Ghost of Me", 
         artist: "Shadowrun", 
-        startTime: 0 
+        startTime: 90 
       },
       { 
         filename: "Incomprehensible.mp3", 
         title: "Incomprehensible", 
         artist: "Shadowrun", 
-        startTime: 0 
+        startTime: 80 
       },
     ]
   },
-  sunsetStrings: {
-    name: "Sunset Strings",
+  sointulaFM: {
+    name: "Sointula FM",
     songs: [
       { 
         filename: "Cranes at Sunset.mp3", 
@@ -91,33 +91,33 @@ const STATIONS = {
     songs: [
       { 
         filename: "Missä on mun luteet nyt.mp3", 
-        title: "Missä on mun luteet nyt", 
+        title: "Missä on mun luteet nyt?", 
         artist: "Vinyylivika", 
-        startTime: 0 
+        startTime: 44 
       },
       { 
         filename: "Hearts on Fire.mp3", 
         title: "Hearts on Fire", 
         artist: "Crystal Beat", 
-        startTime: 0 
+        startTime: 136
       },
       { 
         filename: "Toaster Manual.mp3", 
         title: "Toaster Manual", 
         artist: "Mister Blazer’s Emotional Support Band", 
-        startTime: 0 
+        startTime: 147
       },
       { 
         filename: "Midnight Drive.mp3", 
         title: "Midnight Drive", 
         artist: "Aurora Drive", 
-        startTime: 0 
+        startTime: 50 
       },
       { 
         filename: "Päättymätön hehku.mp3", 
         title: "Päättymätön hehku", 
         artist: "Taajuus", 
-        startTime: 0 
+        startTime: 118 
       }
     ]
   },

@@ -286,7 +286,7 @@ class RadioApp {
         if (!this.currentSong) return;
 
         const station = STATIONS[this.currentStation];
-        this.nowPlayingTitle.textContent = `Now Playing ${station.name}`;
+        this.nowPlayingTitle.textContent = `Now Listening to ${station.name}`;
         this.songTitleEl.textContent = this.currentSong.title;
         this.artistEl.textContent = this.currentSong.artist;
 
@@ -331,7 +331,7 @@ class RadioApp {
         this.noStationMessage.style.display = 'block';
         
         // Initial state
-        this.nowPlayingTitle.textContent = 'Now Playing';
+        this.nowPlayingTitle.textContent = 'Now Listening to';
         this.songTitleEl.textContent = 'No song playing';
         this.artistEl.textContent = 'No artist';
         this.coverArtEl.style.display = 'none';
