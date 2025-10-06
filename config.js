@@ -125,6 +125,42 @@ const STATIONS = {
       }
     ]
   },
+  stormrost: {
+    name: "Stormröst",
+    tagline: "Före åskans dån kom sången. Mythic Folk Metal.",
+    songs: [
+      { 
+        filename: "Runer i Ravnens Skygge.mp3", 
+        title: "Runer i Ravnens Skygge", 
+        artist: "Jorddøn (Danmark)", 
+        startTime: 60 
+      },
+      { 
+        filename: "Å.mp3", 
+        title: "Å", 
+        artist: "Skoddemann (Norge)", 
+        startTime: 60
+      },
+      { 
+        filename: "Hirven varjo.mp3", 
+        title: "Hirven varjo", 
+        artist: "Kajo & Kuu (Suomi)", 
+        startTime: 60
+      },
+      { 
+        filename: "Skutans Hjarta.mp3", 
+        title: "Skutans Hjarta", 
+        artist: "Gråskymt (Sverige)", 
+        startTime: 60 
+      },
+      { 
+        filename: "Reiði undir Jökli.mp3", 
+        title: "Reiði undir Jökli", 
+        artist: "Rauðkembur (Ísland)", 
+        startTime: 60 
+      }
+    ]
+  },
   shuffle: {
     name: "Radio Shuffle",
     tagline: "Add some randomness to your life! Every song shuffled.",
