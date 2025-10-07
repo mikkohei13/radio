@@ -41,6 +41,13 @@ Ctrl+C
 source venv/bin/deactivate
 ```
 
+### Stop if process is stuck
+
+```bash
+ps aux | grep "http.server"
+kill {pid}
+```
+
 
 # Ideas
 
