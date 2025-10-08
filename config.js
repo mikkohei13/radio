@@ -127,7 +127,7 @@ const STATIONS = {
   },
   stormrost: {
     name: "Stormröst",
-    tagline: "Före åskans dån kom sången. Mythic Folk Metal.",
+    tagline: "Före åskan fanns sången. Mythic Folk Metal.",
     songs: [
       { 
         filename: "Runer i Ravnens Skygge.mp3", 
@@ -157,6 +157,18 @@ const STATIONS = {
         filename: "Reiði undir Jökli.mp3", 
         title: "Reiði undir Jökli", 
         artist: "Rauðkembur (Ísland)", 
+        startTime: 60 
+      },
+      { 
+        filename: "Sgàil nam Beanntan.mp3", 
+        title: "Sgàil nam Beanntan", 
+        artist: "Aonaran nan Stiùbhart (Alba)", 
+        startTime: 60 
+      },
+      { 
+        filename: "Í Havsins Myrkri.mp3", 
+        title: "Í Havsins Myrkri", 
+        artist: "Brandur Havsson (Føroyar)", 
         startTime: 60 
       }
     ]

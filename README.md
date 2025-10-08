@@ -23,7 +23,6 @@ pip install -r requirements.txt
 ### Start working
 ```bash
 source venv/bin/activate
-python app.py
 ```
 
 ### View the app
