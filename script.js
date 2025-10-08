@@ -316,6 +316,16 @@ class RadioApp {
             this.randomizedPlaylist.splice(1, 0, announcement);
         }
         
+        // Log the randomized playlist order
+        const stationName = this.currentStation === 'shuffle' ? 'Radio Shuffle' : STATIONS[this.currentStation].name;
+        console.log(`🎵 ${stationName} - Randomized Playlist:`);
+        this.randomizedPlaylist.forEach((song, index) => {
+            const songInfo = song.isAnnouncement 
+                ? `[ANNOUNCEMENT] ${song.title}` 
+                : `${song.title} - ${song.artist}`;
+            console.log(`  ${index + 1}. ${songInfo}`);
+        });
+        
         this.currentSongIndex = 0;
     }
 
