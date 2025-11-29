@@ -27,6 +27,90 @@ const STATIONS = {
         artist: "Jonah Gray", 
         startTime: 12 
       },
+      { 
+        filename: "Between the Edge and the Light.mp3", 
+        title: "Between the Edge and the Light", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Choose You.mp3", 
+        title: "Choose You", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "City Lights, 30 Floors Up.mp3", 
+        title: "City Lights, 30 Floors Up", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Don't Let Go.mp3", 
+        title: "Don't Let Go", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Everything in You.mp3", 
+        title: "Everything in You", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Falling Without Sound.mp3", 
+        title: "Falling Without Sound", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Halfway to the Sun.mp3", 
+        title: "Halfway to the Sun", 
+        artist: "Yes And feat. Country & Town", 
+        startTime: 60 
+      },
+      { 
+        filename: "Paint It Bright.mp3", 
+        title: "Paint It Bright", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Quiet Like Us.mp3", 
+        title: "Quiet Like Us", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Second Place.mp3", 
+        title: "Second Place", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Strings in My Hands.mp3", 
+        title: "Strings in My Hands", 
+        artist: "Jonah Gray", 
+        startTime: 60 
+      },
+      { 
+        filename: "The Clearing.mp3", 
+        title: "The Clearing", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "The Wall at the Edge.mp3", 
+        title: "The Wall at the Edge", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Yes And.mp3", 
+        title: "Yes And", 
+        artist: "Yes And", 
+        startTime: 60 
+      }
     ]
   },
   shadowrun: {
@@ -56,6 +140,12 @@ const STATIONS = {
         title: "Incomprehensible (Shadowrun pt. 4)", 
         artist: "Ghost in Neon", 
         startTime: 80 
+      },
+      { 
+        filename: "Ghost Protocol.mp3", 
+        title: "Ghost Protocol (Shadowrun bonus track)", 
+        artist: "Ghost in Neon", 
+        startTime: 60 
       },
     ]
   },
@@ -135,6 +225,18 @@ const STATIONS = {
         artist: "Machina Pulse", 
         startTime: 10 
       },
+      { 
+        filename: "Iron and Steam.mp3", 
+        title: "Iron and Steam", 
+        artist: "Steam Powered", 
+        startTime: 60 
+      },
+      { 
+        filename: "On maa.mp3", 
+        title: "On maa", 
+        artist: "Rapakivi", 
+        startTime: 60 
+      },
     ]
   },
   sointulaFM: {
@@ -171,6 +273,12 @@ const STATIONS = {
         artist: "Tapio Tienpää ja Pellon Pojat", 
         startTime: 120 
       },
+      { 
+        filename: "Halfway to the Sun.mp3", 
+        title: "Halfway to the Sun", 
+        artist: "Yes And feat. Country & Town", 
+        startTime: 60 
+      },
     ]
   },
   stereoCircus: {
@@ -206,6 +314,12 @@ const STATIONS = {
         title: "Päättymätön hehku", 
         artist: "Taajuus", 
         startTime: 118 
+      },
+      { 
+        filename: "Right Here, Right Now.mp3", 
+        title: "Right Here, Right Now", 
+        artist: "Beetmaker feat. Yes And", 
+        startTime: 60 
       }
     ]
   },
