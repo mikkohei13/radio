@@ -1,4 +1,118 @@
 const STATIONS = {
+  wavelength: {
+    name: "The Wavelength",
+    tagline: "Music that moves with you.",
+    songs: [
+      { 
+        filename: "City Lights.mp3", 
+        title: "City Lights", 
+        artist: "Yes And", 
+        startTime: 60 
+      },
+      { 
+        filename: "Vi Maaler Ljòss.mp3", 
+        title: "Vi Maaler Ljòss", 
+        artist: "Jòna Graasen", 
+        startTime: 60 
+      },
+      { 
+        filename: "Silence Turns to Song.mp3", 
+        title: "Silence Turns to Song", 
+        artist: "Cody Hayes", 
+        startTime: 41 
+      },
+      { 
+        filename: "Cranes at Sunset.mp3", 
+        title: "Cranes at Sunset", 
+        artist: "Jonah Gray", 
+        startTime: 12 
+      },
+    ]
+  },
+  shadowrun: {
+    name: "Shadowrun",
+    tagline: "Broadcasting on frequencies they can't find. If you're listening, you are already free.",
+    songs: [
+      { 
+        filename: "Shadowrun.mp3", 
+        title: "Shadowrun (pt. 1)", 
+        artist: "Ghost in Neon", 
+        startTime: 62 
+      },
+      { 
+        filename: "Signal.mp3", 
+        title: "Signal (Shadowrun pt. 2)", 
+        artist: "Ghost in Neon", 
+        startTime: 50 
+      },
+      { 
+        filename: "Ghost of Me.mp3", 
+        title: "Ghost of Me (Shadowrun pt. 3)", 
+        artist: "Ghost in Neon", 
+        startTime: 90 
+      },
+      { 
+        filename: "Incomprehensible.mp3", 
+        title: "Incomprehensible (Shadowrun pt. 4)", 
+        artist: "Ghost in Neon", 
+        startTime: 80 
+      },
+    ]
+  },
+  stormrost: {
+    name: "Stormröst",
+    tagline: "Före åskan fanns sången. Mythic & epic folk metal in different languages.",
+    songs: [
+      { 
+        filename: "Runer i Ravnens Skygge.mp3", 
+        title: "Runer i Ravnens Skygge", 
+        artist: "Jorddøn (Danmark)", 
+        startTime: 60 
+      },
+      { 
+        filename: "Å.mp3", 
+        title: "Å", 
+        artist: "Skoddemann (Norge)", 
+        startTime: 60
+      },
+      { 
+        filename: "Hirven varjo.mp3", 
+        title: "Hirven varjo", 
+        artist: "Kajo & Kuu (Suomi)", 
+        startTime: 60
+      },
+      { 
+        filename: "Skutans Hjarta.mp3", 
+        title: "Skutans Hjarta", 
+        artist: "Gråskymt (Sverige)", 
+        startTime: 60 
+      },
+      { 
+        filename: "Reiði undir Jökli.mp3", 
+        title: "Reiði undir Jökli", 
+        artist: "Rauðkembur (Ísland)", 
+        startTime: 60 
+      },
+      { 
+        filename: "Sgàil nam Beanntan.mp3", 
+        title: "Sgàil nam Beanntan", 
+        artist: "Aonaran nan Stiùbhart (Alba)", 
+        startTime: 60 
+      },
+      { 
+        filename: "Í Havsins Myrkri.mp3", 
+        title: "Í Havsins Myrkri", 
+        artist: "Brandur Havsson (Føroyar)", 
+        startTime: 60 
+      },
+      { 
+        filename: "Marrek-an Tromm.mp3", 
+        title: "Marrek-an Tromm", 
+        artist: "Mòrranssanghen (Doggerland)", 
+        startTime: 60 
+      }
+    ]
+  },
   metalNation: {
     name: "Metal Nation",
     tagline: "Louder than your neighbors can handle. Heavy metal & hard rock.",
@@ -20,36 +134,6 @@ const STATIONS = {
         title: "180 Seconds to Vibe", 
         artist: "Machina Pulse", 
         startTime: 10 
-      },
-    ]
-  },
-  shadowrun: {
-    name: "Shadowrun",
-    tagline: "Broadcasting on frequencies they can't find. If you're listening, you are already free.",
-    songs: [
-      { 
-        filename: "Shadowrun.mp3", 
-        title: "Shadowrun (pt. 1)", 
-        artist: "Shadowrun", 
-        startTime: 62 
-      },
-      { 
-        filename: "Signal.mp3", 
-        title: "Signal (Shadowrun pt. 2)", 
-        artist: "Shadowrun", 
-        startTime: 50 
-      },
-      { 
-        filename: "Ghost of Me.mp3", 
-        title: "Ghost of Me (Shadowrun pt. 3)", 
-        artist: "Shadowrun", 
-        startTime: 90 
-      },
-      { 
-        filename: "Incomprehensible.mp3", 
-        title: "Incomprehensible (Shadowrun pt. 4)", 
-        artist: "Shadowrun", 
-        startTime: 80 
       },
     ]
   },
@@ -125,50 +209,26 @@ const STATIONS = {
       }
     ]
   },
-  stormrost: {
-    name: "Stormröst",
-    tagline: "Före åskan fanns sången. Mythic Folk Metal.",
+  doggerland: {
+    name: "Doggerland Radio",
+    tagline: "Òssen sang, òssen vaagh. Songs from the fictional Doggerland.",
     songs: [
       { 
-        filename: "Runer i Ravnens Skygge.mp3", 
-        title: "Runer i Ravnens Skygge", 
-        artist: "Jorddøn (Danmark)", 
+        filename: "Marrek-an Tromm.mp3", 
+        title: "Marrek-an Tromm", 
+        artist: "Mòrranssanghen (Doggerland)", 
         startTime: 60 
       },
       { 
-        filename: "Å.mp3", 
-        title: "Å", 
-        artist: "Skoddemann (Norge)", 
-        startTime: 60
-      },
-      { 
-        filename: "Hirven varjo.mp3", 
-        title: "Hirven varjo", 
-        artist: "Kajo & Kuu (Suomi)", 
-        startTime: 60
-      },
-      { 
-        filename: "Skutans Hjarta.mp3", 
-        title: "Skutans Hjarta", 
-        artist: "Gråskymt (Sverige)", 
+        filename: "Stjadh-Ljòss.mp3", 
+        title: "Stjadh-Ljòss", 
+        artist: "STJAARRLYS", 
         startTime: 60 
       },
       { 
-        filename: "Reiði undir Jökli.mp3", 
-        title: "Reiði undir Jökli", 
-        artist: "Rauðkembur (Ísland)", 
-        startTime: 60 
-      },
-      { 
-        filename: "Sgàil nam Beanntan.mp3", 
-        title: "Sgàil nam Beanntan", 
-        artist: "Aonaran nan Stiùbhart (Alba)", 
-        startTime: 60 
-      },
-      { 
-        filename: "Í Havsins Myrkri.mp3", 
-        title: "Í Havsins Myrkri", 
-        artist: "Brandur Havsson (Føroyar)", 
+        filename: "Vi Maaler Ljòss.mp3", 
+        title: "Vi Maaler Ljòss", 
+        artist: "Jòna Graasen", 
         startTime: 60 
       }
     ]

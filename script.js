@@ -489,4 +489,14 @@ class RadioApp {
 document.addEventListener('DOMContentLoaded', () => {
     const app = new RadioApp();
     app.initializeVisualizer();
+    
+    // Check for station parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const stationParam = urlParams.get('station');
+    if (stationParam && STATIONS[stationParam]) {
+        // Small delay to ensure everything is initialized
+        setTimeout(() => {
+            app.selectStation(stationParam);
+        }, 100);
+    }
 });
