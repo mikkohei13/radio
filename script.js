@@ -377,6 +377,9 @@ class RadioApp {
 
         this.state.currentStation = stationId;
         
+        // Log station selection (using station key, e.g. "stormrost" instead of "Stormröst")
+        this.logStationSelection(stationId);
+        
         // Show now playing section and hide no station message
         this.nowPlayingSection.style.display = 'block';
         this.noStationMessage.style.display = 'none';
@@ -592,6 +595,41 @@ class RadioApp {
         }
     }
 
+    logStationSelection(stationKey) {
+        // Only log if token is configured
+        if (typeof LOGGING_TOKEN === 'undefined' || LOGGING_TOKEN === 'your-token-here') {
+            return;
+        }
+
+        try {
+            // Determine app name based on hostname
+            const appName = window.location.hostname === 'www.biomi.org' 
+                ? 'radio_production' 
+                : 'radio_dev';
+            
+            // Get utm_source from URL parameters if present
+            const urlParams = new URLSearchParams(window.location.search);
+            const utmSource = urlParams.get('utm_source');
+            
+            // Build data field: stationKey;utm_source (if utm_source exists)
+            let dataField = stationKey;
+            if (utmSource) {
+                // URL-encode both values and join with semicolon
+                dataField = `${stationKey};${utmSource}`;
+            }
+            
+            // Build logging URL (data field is URL-encoded as a whole)
+            // Add cache-busting parameter to ensure each request is unique (prevents browser caching)
+            const timestamp = Date.now();
+            const url = `https://www.biomi.org/tools/logger/?file=${appName}.log&data=${encodeURIComponent(dataField)}&token=${encodeURIComponent(LOGGING_TOKEN)}&_t=${timestamp}`;
+            
+            // Use Image request - simple, reliable, no CORS issues (endpoint returns PNG)
+            const img = new Image();
+            img.src = url;
+        } catch (error) {
+            // Silently fail - logging failures shouldn't break the app
+        }
+    }
 
     updateUI() {
         // Hide now playing section and show no station message initially
