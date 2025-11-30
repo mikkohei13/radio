@@ -155,6 +155,15 @@ class RadioApp {
     }
     
     initializeVisualizer() {
+        // Check for Web Audio API support
+        if (!(window.AudioContext || window.webkitAudioContext)) {
+            // Hide visualizer if Web Audio API is not supported
+            if (this.visualizer) {
+                this.visualizer.style.display = 'none';
+            }
+            return;
+        }
+        
         // Initialize audio visualizer after DOM is ready
         this.audioVisualizer = new AudioVisualizer('visualizer-canvas', 'audio-source');
     }
