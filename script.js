@@ -200,8 +200,7 @@ class RadioApp {
             isTransitioning: false,
             randomizedPlaylist: [],
             isPlayingAnnouncement: false,
-            isMobile: window.innerWidth <= 768,
-            autoplayBlocked: false
+            isMobile: window.innerWidth <= 768
         };
         
         this.initializeElements();
@@ -324,7 +323,9 @@ class RadioApp {
             this.updatePlayPauseButton(true);
             await this.startVisualizer();
             // Hide autoplay message once audio starts playing
-            this.hideAutoplayMessage();
+            if (this.autoplayMessage) {
+                this.autoplayMessage.style.display = 'none';
+            }
         });
 
         this.audio.addEventListener('pause', () => {
@@ -438,9 +439,11 @@ class RadioApp {
 
         this.audio.load();
         this.audio.play().catch(e => {
-            // Check if error is due to autoplay blocking
+            // Show message if browser blocks audio playback
             if (e.name === 'NotAllowedError' || e.name === 'NotSupportedError') {
-                this.handleAutoplayBlocked();
+                if (this.autoplayMessage) {
+                    this.autoplayMessage.style.display = 'block';
+                }
             } else {
                 console.error('Error playing audio:', e);
             }
@@ -492,9 +495,11 @@ class RadioApp {
             
             if (this.audio.src) {
                 this.audio.play().catch(e => {
-                    // Check if error is due to autoplay blocking
+                    // Show message if browser blocks audio playback
                     if (e.name === 'NotAllowedError' || e.name === 'NotSupportedError') {
-                        this.handleAutoplayBlocked();
+                        if (this.autoplayMessage) {
+                            this.autoplayMessage.style.display = 'block';
+                        }
                     } else {
                         console.error('Error playing audio:', e);
                     }
@@ -563,23 +568,6 @@ class RadioApp {
         }
     }
 
-    handleAutoplayBlocked() {
-        this.state.autoplayBlocked = true;
-        this.showAutoplayMessage();
-    }
-
-    showAutoplayMessage() {
-        if (this.autoplayMessage) {
-            this.autoplayMessage.style.display = 'block';
-        }
-    }
-
-    hideAutoplayMessage() {
-        if (this.autoplayMessage && this.state.autoplayBlocked) {
-            this.autoplayMessage.style.display = 'none';
-            this.state.autoplayBlocked = false;
-        }
-    }
 
     updateUI() {
         // Hide now playing section and show no station message initially
@@ -594,7 +582,9 @@ class RadioApp {
         this.coverArtEl.style.display = 'none';
         this.updatePlayPauseButton(false);
         this.stopVisualizer();
-        this.hideAutoplayMessage();
+        if (this.autoplayMessage) {
+            this.autoplayMessage.style.display = 'none';
+        }
     }
 }
 
@@ -602,14 +592,4 @@ class RadioApp {
 document.addEventListener('DOMContentLoaded', () => {
     const app = new RadioApp();
     app.initializeVisualizer();
-    
-    // Check for station parameter in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const stationParam = urlParams.get('station');
-    if (stationParam && STATIONS[stationParam]) {
-        // Small delay to ensure everything is initialized
-        setTimeout(() => {
-            app.selectStation(stationParam);
-        }, 100);
-    }
 });

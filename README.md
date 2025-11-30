@@ -78,40 +78,32 @@ lsof -ti :8080 | xargs kill -9
 
 # Ideas
 
-Cursor:
-Here are my suggestions to make the app feel more like a real radio experience:
-Radio-Like Features to Add:
-1. Transitions & Timing
-Pause between songs: 1-2 second gap when transitioning (as you mentioned)
-Fade effects: Gentle fade-out at end of song, fade-in for new song
-Crossfade option: Overlap the end of one song with the start of the next
-Random timing variation: Slight variation in pause duration (1.2-2.1 seconds) to feel more natural
-2. Radio Station Behavior
-Station identification: Brief station name announcement between songs
-Station jingles: Short audio clips that play occasionally between songs
-Time-based programming: Different songs at different times of day
-Weather/time announcements: Simulated radio station features
-3. Audio Enhancements
-Audio normalization: Ensure consistent volume levels across songs
-EQ presets: Different audio profiles per station (bass-heavy for some, clear for others)
-Audio compression: Make it sound more "radio-like" with slight compression
-Static/ambient noise: Very subtle background radio static
-4. Visual Radio Elements
-Station logo display: Show station logo in the now-playing area
-Frequency display: Show fake radio frequencies (e.g., "FM 98.7")
-Signal strength indicator: Visual bars showing "signal quality"
-Station branding: Different color schemes per station
-5. Interactive Radio Features
-Request system: Simulated "call-in" requests (randomly suggest songs)
-Radio host commentary: Text-based "DJ" comments between songs
+## Refactoring:
+
+High priority
+
+Extract magic numbers to a named constants section
+Move 1500 (pause duration), 256 (fftSize), 0.8 (data length multiplier) to a CONSTANTS object at the top of the file
+
+Medium priority
+
+Add debouncing/throttling to prevent rapid button clicks
+Prevent multiple rapid clicks on play/pause or next during transitions
+Use a simple flag or small delay to ignore clicks during isTransitioning
+Prevents race conditions and audio glitches
+
+Add error boundaries around critical audio operations
+Wrap audio.play(), audio.load(), and visualizer connection in try-catch
+Log errors with context (which song, which station)
+Prevents one failed song from breaking the entire app
+
+Document the audio element connection pattern
+Add a comment explaining why connectAudio checks for existing connections
+Clarify the Web Audio API connection chain (source → analyser → destination)
+Helps AI tools understand the audio pipeline
+
+## Other:
+
 Station history: Show recently played songs
-Live listener count: Fake "listeners online" counter
-6. Realistic Radio Timing
-Commercial breaks: Occasional breaks with station identification
-News updates: Simulated news segments (text-based)
-Traffic reports: Fake traffic updates
-Song dedications: Random "dedicated to" messages
-7. Station Personality
-Station-specific transitions: Different pause lengths and effects per station
-Genre-appropriate behavior: Classical stations have longer pauses, rock stations are more energetic
-Station slogans: Display station taglines occasionally
+
+Commercial, weather (real?), news updates, traffic updates

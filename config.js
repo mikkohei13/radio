@@ -143,7 +143,7 @@ const STATIONS = {
       },
       { 
         filename: "Ghost Protocol.mp3", 
-        title: "Ghost Protocol (Shadowrun bonus track)", 
+        title: "Ghost Protocol (Celestial Soundtrack)", 
         artist: "Ghost in Neon", 
         startTime: 60 
       },
