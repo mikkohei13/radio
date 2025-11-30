@@ -512,9 +512,19 @@ class RadioApp {
         this.songTitleEl.textContent = this.state.currentSong.title;
         this.artistEl.textContent = this.state.currentSong.artist;
 
-        // Update cover art (hide for announcements)
+        // Update cover art (show station art for announcements, song art for songs)
         if (this.state.currentSong.isAnnouncement) {
-            this.coverArtEl.style.display = 'none';
+            const stationArtPath = `./station_art/${station.name}.png`;
+            this.coverArtEl.src = stationArtPath;
+            this.coverArtEl.alt = `${station.name} Station Art`;
+            
+            // Handle missing station art
+            this.coverArtEl.onerror = () => {
+                this.coverArtEl.style.display = 'none';
+            };
+            this.coverArtEl.onload = () => {
+                this.coverArtEl.style.display = 'block';
+            };
         } else {
             const coverArtPath = `./cover_art/${this.state.currentSong.filename.replace('.mp3', '.jpg')}`;
             this.coverArtEl.src = coverArtPath;
