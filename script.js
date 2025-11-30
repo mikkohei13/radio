@@ -352,20 +352,6 @@ class RadioApp {
         this.state.currentSongIndex = 0;
     }
 
-    selectRandomSong() {
-        if (this.state.currentStation === 'shuffle') {
-            // For shuffle, pick from all songs
-            const randomIndex = Math.floor(Math.random() * this.allSongs.length);
-            this.state.currentSong = this.allSongs[randomIndex];
-        } else {
-            // For regular stations, pick from station's songs
-            const station = STATIONS[this.state.currentStation];
-            const randomIndex = Math.floor(Math.random() * station.songs.length);
-            this.state.currentSong = station.songs[randomIndex];
-            this.state.currentSongIndex = randomIndex;
-        }
-    }
-
     async playCurrentSong(useStartTime = true) {
         if (!this.state.currentSong) return;
 
