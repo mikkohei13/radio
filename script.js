@@ -128,6 +128,7 @@ class RadioApp {
         this.isPlayingAnnouncement = false;
         this.isMobile = window.innerWidth <= 768;
         this.audioVisualizer = null; // Will be initialized after DOM is ready
+        this.autoplayBlocked = false; // Track if autoplay is blocked by browser
         
         this.initializeElements();
         this.setupEventListeners();
@@ -164,6 +165,7 @@ class RadioApp {
         this.artistEl = document.getElementById('artist');
         this.coverArtEl = document.getElementById('cover-art');
         this.visualizer = document.querySelector('.visualizer');
+        this.autoplayMessage = document.getElementById('autoplay-message');
         
         this.generateStationButtons();
     }
@@ -237,6 +239,8 @@ class RadioApp {
             this.isPlaying = true;
             this.updatePlayPauseButton(true);
             this.startVisualizer();
+            // Hide autoplay message once audio starts playing
+            this.hideAutoplayMessage();
         });
 
         this.audio.addEventListener('pause', () => {
@@ -372,7 +376,12 @@ class RadioApp {
 
         this.audio.load();
         this.audio.play().catch(e => {
-            console.error('Error playing audio:', e);
+            // Check if error is due to autoplay blocking
+            if (e.name === 'NotAllowedError' || e.name === 'NotSupportedError') {
+                this.handleAutoplayBlocked();
+            } else {
+                console.error('Error playing audio:', e);
+            }
         });
 
         this.updateNowPlaying();
@@ -415,7 +424,12 @@ class RadioApp {
         } else {
             if (this.audio.src) {
                 this.audio.play().catch(e => {
-                    console.error('Error playing audio:', e);
+                    // Check if error is due to autoplay blocking
+                    if (e.name === 'NotAllowedError' || e.name === 'NotSupportedError') {
+                        this.handleAutoplayBlocked();
+                    } else {
+                        console.error('Error playing audio:', e);
+                    }
                 });
             }
         }
@@ -469,6 +483,24 @@ class RadioApp {
         }
     }
 
+    handleAutoplayBlocked() {
+        this.autoplayBlocked = true;
+        this.showAutoplayMessage();
+    }
+
+    showAutoplayMessage() {
+        if (this.autoplayMessage) {
+            this.autoplayMessage.style.display = 'block';
+        }
+    }
+
+    hideAutoplayMessage() {
+        if (this.autoplayMessage && this.autoplayBlocked) {
+            this.autoplayMessage.style.display = 'none';
+            this.autoplayBlocked = false;
+        }
+    }
+
     updateUI() {
         // Hide now playing section and show no station message initially
         this.nowPlayingSection.style.display = 'none';
@@ -482,6 +514,7 @@ class RadioApp {
         this.coverArtEl.style.display = 'none';
         this.updatePlayPauseButton(false);
         this.stopVisualizer();
+        this.hideAutoplayMessage();
     }
 }
 

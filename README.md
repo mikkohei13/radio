@@ -1,7 +1,7 @@
 
 # Radio
 
-This is a simple radio app.
+This is a simple radio app, which shows a list of radio stations and plays the music from them. Stations have logos, songs and announcements. Songs are stored as mp3 files in the `music` directory and have cover art in the `covert_art` directory. config.js contains the list of stations and the music files for each station. script.js is the main script that controls the radio app.
 
 ## Setup
 

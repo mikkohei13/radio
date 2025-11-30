@@ -217,6 +217,23 @@ header h1 {
     transform: none;
 }
 
+/* Autoplay Blocked Message */
+.autoplay-message {
+    background-color: rgba(74, 144, 226, 0.2);
+    border: 1px solid rgba(74, 144, 226, 0.4);
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.autoplay-message p {
+    color: #66b3ff;
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 500;
+}
+
 /* Music Visualizer */
 .visualizer {
     display: flex;
