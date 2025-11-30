@@ -43,8 +43,7 @@ source venv/bin/deactivate
 ### Stop if process is stuck
 
 ```bash
-ps aux | grep "http.server"
-kill {pid}
+lsof -ti :8080 | xargs kill -9
 ```
 
 

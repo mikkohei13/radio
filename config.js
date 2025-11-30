@@ -1,7 +1,7 @@
 const STATIONS = {
   wavelength: {
     name: "The Wavelength",
-    tagline: "Music that moves with you.",
+    tagline: "Music that moves with you. Soft & chill, rock & pop.",
     songs: [
       { 
         filename: "City Lights.mp3", 
@@ -70,8 +70,8 @@ const STATIONS = {
         startTime: 60 
       },
       { 
-        filename: "Paint It Bright.mp3", 
-        title: "Paint It Bright", 
+        filename: "Paint it Bright.mp3", 
+        title: "Paint it Bright", 
         artist: "Yes And", 
         startTime: 60 
       },
@@ -234,7 +234,7 @@ const STATIONS = {
       { 
         filename: "On maa.mp3", 
         title: "On maa", 
-        artist: "Rapakivi", 
+        artist: "Rapakivi, lyrics Saima Harmaja", 
         startTime: 60 
       },
     ]
@@ -292,12 +292,6 @@ const STATIONS = {
         startTime: 44 
       },
       { 
-        filename: "Hearts on Fire.mp3", 
-        title: "Hearts on Fire", 
-        artist: "Crystal Beat", 
-        startTime: 136
-      },
-      { 
         filename: "Toaster Manual.mp3", 
         title: "Toaster Manual", 
         artist: "Mister Blazer’s Emotional Support Band", 
@@ -344,7 +338,13 @@ const STATIONS = {
         title: "Vi Maaler Ljòss", 
         artist: "Jòna Graasen", 
         startTime: 60 
-      }
+      },
+      { 
+        filename: "Vi Maaler Ljòss (30 Jaar Sennare).mp3", 
+        title: "Vi Maaler Ljòss (30 Jaar Sennare)", 
+        artist: "Jòna Graasen", 
+        startTime: 60 
+      },
     ]
   },
   shuffle: {
