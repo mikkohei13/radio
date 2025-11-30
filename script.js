@@ -280,6 +280,30 @@ class RadioApp {
             this.stationsContainer.appendChild(button);
         });
         
+        // Add feedback link as the last element
+        const feedbackLink = document.createElement('a');
+        feedbackLink.href = 'https://forms.gle/pi42wTeGxp77954y8';
+        feedbackLink.target = '_blank';
+        feedbackLink.rel = 'noopener noreferrer';
+        feedbackLink.className = 'station-link feedback-link';
+        feedbackLink.title = 'Feedback';
+        feedbackLink.setAttribute('aria-label', 'Open feedback form in new window');
+        
+        // Create image element
+        const feedbackImg = document.createElement('img');
+        feedbackImg.src = './station_art/feedback.png';
+        feedbackImg.alt = 'Feedback';
+        feedbackImg.className = 'station-logo';
+        
+        // Handle missing images
+        feedbackImg.onerror = () => {
+            // Fallback to text if image fails to load
+            feedbackLink.innerHTML = '<span class="station-name">Feedback</span>';
+        };
+        
+        feedbackLink.appendChild(feedbackImg);
+        this.stationsContainer.appendChild(feedbackLink);
+        
         // Update stationButtons reference
         this.stationButtons = document.querySelectorAll('.station-btn');
     }
