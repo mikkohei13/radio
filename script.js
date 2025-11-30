@@ -34,10 +34,15 @@ class AudioVisualizer {
         }
     }
     
-    connectAudio(audioElement) {
+    async connectAudio(audioElement) {
         if (!this.isInitialized) return;
         
         try {
+            // Resume AudioContext if suspended (required for iOS Safari)
+            if (this.audioContext.state === 'suspended') {
+                await this.audioContext.resume();
+            }
+            
             // Only create a new source if we don't have one or if it's a different audio element
             if (!this.source || this.connectedAudioElement !== audioElement) {
                 // Disconnect existing source if any
@@ -58,12 +63,16 @@ class AudioVisualizer {
         }
     }
     
-    start() {
+    async start() {
         if (!this.isInitialized || this.animationId) return;
         
-        // Resume audio context if suspended
+        // Resume audio context if suspended (required for iOS Safari)
         if (this.audioContext.state === 'suspended') {
-            this.audioContext.resume();
+            try {
+                await this.audioContext.resume();
+            } catch (error) {
+                console.error('Error resuming audio context:', error);
+            }
         }
         
         this.draw();
@@ -118,6 +127,11 @@ class AudioVisualizer {
 class RadioApp {
     constructor() {
         this.audio = new Audio();
+        // iOS Safari requires playsinline for audio playback
+        this.audio.setAttribute('playsinline', '');
+        this.audio.setAttribute('webkit-playsinline', '');
+        // Ensure volume is set (iOS Safari sometimes requires this)
+        this.audio.volume = 1.0;
         this.allSongs = getAllSongs();
         this.radioPauseDuration = 1500; // 1.5 seconds pause between songs
         this.audioVisualizer = null; // Will be initialized after DOM is ready
@@ -240,10 +254,10 @@ class RadioApp {
             this.updatePlayPauseButton(this.state.isPlaying);
         });
 
-        this.audio.addEventListener('play', () => {
+        this.audio.addEventListener('play', async () => {
             this.state.isPlaying = true;
             this.updatePlayPauseButton(true);
-            this.startVisualizer();
+            await this.startVisualizer();
             // Hide autoplay message once audio starts playing
             this.hideAutoplayMessage();
         });
@@ -352,7 +366,7 @@ class RadioApp {
         }
     }
 
-    playCurrentSong(useStartTime = true) {
+    async playCurrentSong(useStartTime = true) {
         if (!this.state.currentSong) return;
 
         // Determine audio path based on whether it's an announcement
@@ -367,9 +381,9 @@ class RadioApp {
         
         this.audio.src = audioPath;
         
-        // Connect audio to visualizer
+        // Connect audio to visualizer (await to ensure AudioContext is resumed)
         if (this.audioVisualizer) {
-            this.audioVisualizer.connectAudio(this.audio);
+            await this.audioVisualizer.connectAudio(this.audio);
         }
         
         // Set up seeking to start time after metadata loads (only when switching stations)
@@ -421,12 +435,23 @@ class RadioApp {
         this.playCurrentSong(false);
     }
 
-    togglePlayPause() {
+    async togglePlayPause() {
         if (this.state.isTransitioning) return; // Don't allow play/pause during transitions
         
         if (this.state.isPlaying) {
             this.audio.pause();
         } else {
+            // Resume AudioContext on user interaction (required for iOS Safari)
+            if (this.audioVisualizer && this.audioVisualizer.audioContext) {
+                if (this.audioVisualizer.audioContext.state === 'suspended') {
+                    try {
+                        await this.audioVisualizer.audioContext.resume();
+                    } catch (error) {
+                        console.error('Error resuming audio context:', error);
+                    }
+                }
+            }
+            
             if (this.audio.src) {
                 this.audio.play().catch(e => {
                     // Check if error is due to autoplay blocking
@@ -476,9 +501,9 @@ class RadioApp {
         }
     }
 
-    startVisualizer() {
+    async startVisualizer() {
         if (this.audioVisualizer) {
-            this.audioVisualizer.start();
+            await this.audioVisualizer.start();
         }
     }
 
