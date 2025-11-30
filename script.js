@@ -199,6 +199,7 @@ class RadioApp {
             button.className = 'station-btn';
             button.dataset.station = stationId;
             button.title = station.name; // Tooltip with station name
+            button.setAttribute('aria-label', `Select ${station.name} radio station`);
             
             // Create image element
             const img = document.createElement('img');
@@ -304,43 +305,35 @@ class RadioApp {
         this.playCurrentSong();
     }
 
+    createAnnouncement(stationName) {
+        return {
+            filename: `${stationName}.mp3`,
+            title: `${stationName} Station ID`,
+            artist: 'Station Announcement',
+            startTime: 0,
+            isAnnouncement: true
+        };
+    }
+
     createRandomizedPlaylist() {
-        if (this.state.currentStation === 'shuffle') {
-            // For shuffle, use all songs in random order
-            this.state.randomizedPlaylist = [...this.allSongs].sort(() => Math.random() - 0.5);
-            
-            // Insert Radio Shuffle announcement as second song
-            const announcement = {
-                filename: 'Radio Shuffle.mp3',
-                title: 'Radio Shuffle Station ID',
-                artist: 'Station Announcement',
-                startTime: 0,
-                isAnnouncement: true
-            };
-            
-            // Insert announcement at position 1 (second song)
-            this.state.randomizedPlaylist.splice(1, 0, announcement);
-        } else {
-            // For regular stations, randomize the station's songs
-            const station = STATIONS[this.state.currentStation];
-            this.state.randomizedPlaylist = [...station.songs].sort(() => Math.random() - 0.5);
-            
-            // Insert station announcement as second song
-            const stationName = station.name;
-            const announcement = {
-                filename: `${stationName}.mp3`,
-                title: `${stationName} Station ID`,
-                artist: 'Station Announcement',
-                startTime: 0,
-                isAnnouncement: true
-            };
-            
-            // Insert announcement at position 1 (second song)
-            this.state.randomizedPlaylist.splice(1, 0, announcement);
-        }
+        // Get songs for this station
+        const songs = this.state.currentStation === 'shuffle' 
+            ? [...this.allSongs] 
+            : [...STATIONS[this.state.currentStation].songs];
+        
+        // Randomize songs
+        this.state.randomizedPlaylist = songs.sort(() => Math.random() - 0.5);
+        
+        // Get station name for announcement
+        const stationName = this.state.currentStation === 'shuffle' 
+            ? 'Radio Shuffle' 
+            : STATIONS[this.state.currentStation].name;
+        
+        // Insert announcement as second song (at position 1)
+        const announcement = this.createAnnouncement(stationName);
+        this.state.randomizedPlaylist.splice(1, 0, announcement);
         
         // Log the randomized playlist order
-        const stationName = this.state.currentStation === 'shuffle' ? 'Radio Shuffle' : STATIONS[this.state.currentStation].name;
         console.log(`🎵 ${stationName} - Randomized Playlist:`);
         this.state.randomizedPlaylist.forEach((song, index) => {
             const songInfo = song.isAnnouncement 
@@ -408,14 +401,9 @@ class RadioApp {
     }
 
     nextSong() {
-        // For all stations, go to next song in randomized playlist
+        // Go to next song in playlist, looping back to beginning when complete
         this.state.currentSongIndex = (this.state.currentSongIndex + 1) % this.state.randomizedPlaylist.length;
         this.state.currentSong = this.state.randomizedPlaylist[this.state.currentSongIndex];
-        
-        // If we've completed the playlist, create a new randomized one
-        if (this.state.currentSongIndex === 0) {
-            this.createRandomizedPlaylist();
-        }
         
         // When moving to next song, don't use startTime - play from beginning
         this.playCurrentSong(false);
@@ -482,8 +470,10 @@ class RadioApp {
         const playIcon = this.playPauseBtn.querySelector('.play-icon');
         if (playing) {
             playIcon.textContent = '⏸';
+            this.playPauseBtn.setAttribute('aria-label', 'Pause');
         } else {
             playIcon.textContent = '▶';
+            this.playPauseBtn.setAttribute('aria-label', 'Play');
         }
     }
 
