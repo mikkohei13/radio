@@ -1,7 +1,22 @@
 
 # AI Radio App
 
-This is a simple radio app, which shows a list of radio stations and plays the music from them. Stations have logos, songs and announcements. Songs are stored as mp3 files in the `music` directory and have cover art in the `covert_art` directory. config.js contains the list of stations and the music files for each station. script.js is the main script that controls the radio app.
+A web app that simulates radio stations with AI-generated music, announcements, and cover art. Eight fictional stations, each with its own genre and personality. Switch stations, skip tracks, and listen to DJ idents between songs. Just like real radio, except nothing is real.
+
+Try it live → https://www.biomi.org/radio/?utm_source=github
+
+[![Screenshot showing few radio stations and music player with cover art and visualizer](static/preview.jpg)](https://www.biomi.org/radio/?utm_source=github)
+
+## Overview
+
+- **`index.html`**: Main HTML structure.
+- **`script.js`**: Contains `AudioVisualizer` class and `RadioApp` class with all app logic. All app state lives in `RadioApp.state` - this makes it easy to see what the app knows at any time.
+- **`config.js`**: Station definitions and song lists.
+- **`style.css`**: All styling in one file.
+- **`announcements/`**: DJ idents/announcements (mp3)
+- **`audio/`**: Song files (mp3)
+- **`cover_art/`**: Album artwork (jpg, 512 x 512 px)
+- **`station_art/`**: Station logos,  (png, 256 x 256 px)
 
 ## Development Guidelines
 
@@ -25,13 +40,6 @@ This is a simple radio app, which shows a list of radio stations and plays the m
 - Graceful degradation: If a feature isn't supported or something goes wrong, selecting a station and playing music should still work
 - Log errors with context: Include relevant information (which song, which station) in error logs
 
-## Architecture Overview
-
-- **`index.html`**: Main HTML structure with semantic elements
-- **`script.js`**: Contains `AudioVisualizer` class and `RadioApp` class with all app logic
-- **`config.js`**: Station definitions and song lists - simple data structure
-- **`style.css`**: All styling in one file
-- **State object**: All app state lives in `RadioApp.state` - this makes it easy to see what the app knows at any time
 
 ## Setup
 
@@ -50,29 +58,26 @@ pip install -r requirements.txt
 
 ## Daily Usage
 
-### Start working
 ```bash
+# Start working
 source venv/bin/activate
 ```
 
-### View the app
-
 ```bash
+# View the app
 python -m http.server 8080
 ```
 
 Open http://localhost:8000 in your browser.
 
-### Stop the app
-
 ```bash
+# Stop the app
 Ctrl+C
 source venv/bin/deactivate
 ```
 
-### Stop if process is stuck
-
 ```bash
+# Stop if process is stuck
 lsof -ti :8080 | xargs kill -9
 ```
 
