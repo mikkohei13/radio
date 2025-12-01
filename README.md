@@ -5,7 +5,9 @@ A web app that simulates radio stations with AI-generated music, announcements, 
 
 Try it live → https://www.biomi.org/radio/?utm_source=github
 
-[![Screenshot showing few radio stations and music player with cover art and visualizer](static/preview.jpg)](https://www.biomi.org/radio/?utm_source=github)
+<a href="https://www.biomi.org/radio/?utm_source=github">
+  <img src="static/preview.jpg" width="630" alt="Screenshot showing few radio stations and music player with cover art and visualizer">
+</a>
 
 ## Overview
 
