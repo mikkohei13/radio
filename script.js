@@ -363,6 +363,20 @@ class RadioApp {
             // Re-check mobile status on resize
             this.state.isMobile = window.innerWidth <= 768;
         });
+
+        // Handle page visibility changes (important for Android)
+        // When app comes back to foreground, sync audio state
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                // Page became visible - sync audio state
+                // Check if audio is actually playing vs our state
+                if (this.state.isPlaying && this.audio.paused) {
+                    // State says playing but audio is paused - sync state
+                    this.state.isPlaying = false;
+                    this.updatePlayPauseButton(false);
+                }
+            }
+        });
     }
 
     selectStation(stationId) {
@@ -509,6 +523,11 @@ class RadioApp {
         if (this.state.isPlaying) {
             this.audio.pause();
         } else {
+            // Hide autoplay message when user clicks play
+            if (this.autoplayMessage) {
+                this.autoplayMessage.style.display = 'none';
+            }
+            
             // Resume AudioContext on user interaction (required for iOS Safari)
             if (this.audioVisualizer && this.audioVisualizer.audioContext) {
                 if (this.audioVisualizer.audioContext.state === 'suspended') {
@@ -520,17 +539,32 @@ class RadioApp {
                 }
             }
             
-            if (this.audio.src) {
-                this.audio.play().catch(e => {
-                    // Show message if browser blocks audio playback
-                    if (e.name === 'NotAllowedError' || e.name === 'NotSupportedError') {
-                        if (this.autoplayMessage) {
-                            this.autoplayMessage.style.display = 'block';
-                        }
-                    } else {
-                        console.error('Error playing audio:', e);
+            // If audio.src is empty or invalid, reload the current song
+            // This can happen on Android when the app goes to background
+            if (!this.audio.src || this.audio.src === '' || this.audio.readyState === 0) {
+                if (this.state.currentSong) {
+                    // Reload the current song without using startTime
+                    await this.playCurrentSong(false);
+                    return;
+                }
+            }
+            
+            // Try to play the audio
+            try {
+                await this.audio.play();
+            } catch (e) {
+                // Show message if browser blocks audio playback
+                if (e.name === 'NotAllowedError' || e.name === 'NotSupportedError') {
+                    if (this.autoplayMessage) {
+                        this.autoplayMessage.style.display = 'block';
                     }
-                });
+                } else {
+                    console.error('Error playing audio:', e);
+                    // If play fails for other reasons, try reloading the song
+                    if (this.state.currentSong) {
+                        await this.playCurrentSong(false);
+                    }
+                }
             }
         }
     }
