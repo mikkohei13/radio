@@ -63,6 +63,8 @@ header h1 {
     justify-content: center;
     min-height: 80px;
     text-decoration: none;
+    position: relative;
+    overflow: hidden;
 }
 
 .station-logo {
@@ -71,6 +73,7 @@ header h1 {
     width: auto;
     height: auto;
     object-fit: contain;
+    transition: transform 0.3s ease;
 }
 
 .station-name {
@@ -83,6 +86,56 @@ header h1 {
 .station-link:hover {
     background-color: #3d3d3d;
     border-color: #666666;
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.station-btn:hover .station-logo {
+    transform: scale(0.9);
+}
+
+/* Overlay with text on hover */
+.station-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.85) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.station-btn::after {
+    content: 'Click to play this station';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9),
+                 0 0 20px rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 2;
+    padding: 10px 15px;
+    max-width: 90%;
+}
+
+.station-btn:hover::before,
+.station-btn:hover::after {
+    opacity: 1;
 }
 
 .station-btn.active {
