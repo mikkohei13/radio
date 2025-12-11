@@ -242,6 +242,7 @@ class RadioApp {
         this.nowPlayingTitle = document.getElementById('now-playing-title');
         this.nowPlayingTagline = document.getElementById('now-playing-tagline');
         this.playPauseBtn = document.getElementById('play-pause-btn');
+        this.prevBtn = document.getElementById('prev-btn');
         this.nextBtn = document.getElementById('next-btn');
         this.songTitleEl = document.getElementById('song-title');
         this.artistEl = document.getElementById('artist');
@@ -320,6 +321,13 @@ class RadioApp {
         // Play/Pause button
         this.playPauseBtn.addEventListener('click', () => {
             this.togglePlayPause();
+        });
+
+        // Previous song button
+        this.prevBtn.addEventListener('click', () => {
+            if (!this.state.isTransitioning) {
+                this.prevSong();
+            }
         });
 
         // Next song button
@@ -403,6 +411,9 @@ class RadioApp {
         
         // Set current song to first in randomized playlist
         this.state.currentSong = this.state.randomizedPlaylist[this.state.currentSongIndex];
+        
+        // Update prev button state (should be disabled on first song)
+        this.updatePrevButtonState();
         
         // Scroll to player on mobile devices
         this.scrollToPlayerOnMobile();
@@ -508,6 +519,20 @@ class RadioApp {
         }, this.radioPauseDuration);
     }
 
+    prevSong() {
+        // Go to previous song in playlist
+        if (this.state.currentSongIndex > 0) {
+            this.state.currentSongIndex = this.state.currentSongIndex - 1;
+            this.state.currentSong = this.state.randomizedPlaylist[this.state.currentSongIndex];
+            
+            // When moving to previous song, don't use startTime - play from beginning
+            this.playCurrentSong(false);
+        }
+        
+        // Update prev button state
+        this.updatePrevButtonState();
+    }
+
     nextSong() {
         // Go to next song in playlist, looping back to beginning when complete
         this.state.currentSongIndex = (this.state.currentSongIndex + 1) % this.state.randomizedPlaylist.length;
@@ -515,6 +540,9 @@ class RadioApp {
         
         // When moving to next song, don't use startTime - play from beginning
         this.playCurrentSong(false);
+        
+        // Update prev button state (may need to enable it)
+        this.updatePrevButtonState();
     }
 
     async togglePlayPause() {
@@ -617,6 +645,15 @@ class RadioApp {
         }
     }
 
+    updatePrevButtonState() {
+        // Disable prev button when on first song
+        if (this.state.currentSongIndex === 0) {
+            this.prevBtn.disabled = true;
+        } else {
+            this.prevBtn.disabled = false;
+        }
+    }
+
     async startVisualizer() {
         if (this.audioVisualizer) {
             await this.audioVisualizer.start();
@@ -677,6 +714,7 @@ class RadioApp {
         this.artistEl.textContent = 'No artist';
         this.coverArtEl.style.display = 'none';
         this.updatePlayPauseButton(false);
+        this.prevBtn.disabled = true; // Disabled by default
         this.stopVisualizer();
         if (this.autoplayMessage) {
             this.autoplayMessage.style.display = 'none';
